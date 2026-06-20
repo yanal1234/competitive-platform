@@ -28,7 +28,9 @@ input_format text not null,
 output_format  text not null,
 created_at  datetime DEFAULT CURRENT_TIMESTAMP,
 accepted_count int DEFAULT 0,
-submission_count int DEFAULT 0
+submission_count int DEFAULT 0,
+time_limit INT DEFAULT 1,
+memory_limit INT DEFAULT 256
 );
 
 create table if not exists Submissions(
@@ -155,6 +157,19 @@ UNIQUE(contest_id, problem_order),
 
     FOREIGN KEY (contest_id)
         REFERENCES Contests(contest_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS TestCases(
+testcase_id INT PRIMARY KEY AUTO_INCREMENT,
+input_data TEXT NOT NULL,
+expected_output TEXT NOT NULL,
+is_hidden BOOLEAN DEFAULT TRUE,
+problem_id INT NOT NULL,
+
+    FOREIGN KEY (problem_id)
+        REFERENCES Problems(problem_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
