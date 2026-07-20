@@ -15,6 +15,7 @@ bio text,
 profile_picture varchar(255),
 created_at datetime DEFAULT CURRENT_TIMESTAMP,
 last_login DATETIME,
+role ENUM('Easy','Medium','Hard') not null,
 country VARCHAR(100)
 );
 
@@ -63,10 +64,6 @@ tag_id int primary key AUTO_INCREMENT,
 tag_name VARCHAR(50) UNIQUE NOT NULL
 );
 
-create table if not exists Skills(
-skill_id INT PRIMARY KEY AUTO_INCREMENT,
-skill_name VARCHAR(100) UNIQUE NOT NULL
-);
 
 create table if not exists Contests(
 contest_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -98,16 +95,18 @@ problem_id INT NOT NULL,
 create table if not exists UserSkills(
 mastery_score DECIMAL(5,2) DEFAULT 0,
 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+solved_count INT DEFAULT 0,
+avg_rating INT DEFAULT 0,
 user_id INT NOT NULL,
-skill_id INT NOT NULL,
-PRIMARY KEY (user_id, skill_id),
+tag_id INT NOT NULL,
+PRIMARY KEY (user_id, tag_id),
     FOREIGN KEY (user_id)
         REFERENCES Users(user_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 
-    FOREIGN KEY (skill_id)
-        REFERENCES Skills(skill_id)
+    FOREIGN KEY (tag_id)
+        REFERENCES Tags(tag_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
@@ -170,6 +169,64 @@ problem_id INT NOT NULL,
 
     FOREIGN KEY (problem_id)
         REFERENCES Problems(problem_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Tag_relations (
+tag_id INT NOT NULL,
+related_tag_id INT NOT NULL,
+strength FLOAT DEFAULT 0.5,
+    FOREIGN KEY (tag_id)
+        REFERENCES Tags(tag_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    FOREIGN KEY (related_tag_id)
+        REFERENCES Tags(tag_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Roadmap_stages (
+    stage_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    stage_order INT UNIQUE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Roadmap_tags (
+    stage_id INT NOT NULL,
+    tag_id INT NOT NULL,
+    topic_order INT NOT NULL,
+
+    PRIMARY KEY (stage_id, tag_id),
+
+    FOREIGN KEY (stage_id)
+        REFERENCES Roadmap_stages(stage_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    FOREIGN KEY (tag_id)
+        REFERENCES Tags(tag_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS User_roadmap_progress (
+    user_id INT NOT NULL,
+    stage_id INT NOT NULL,
+    tag_id INT NOT NULL,
+    completed BOOLEAN DEFAULT FALSE,
+
+    PRIMARY KEY (user_id, stage_id, tag_id),
+
+    FOREIGN KEY (user_id)
+        REFERENCES Users(user_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    FOREIGN KEY (stage_id, tag_id)
+        REFERENCES Roadmap_tags(stage_id, tag_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
