@@ -25,4 +25,93 @@ const getAllProblemsSorted=async(req,res)=>{
     }
 };
 
-module.exports={getAllProblems,getAllProblemsSorted};
+const add_problems = async (req, res) =>
+{
+  const {
+    title,
+    difficulty,
+    points,
+    statement,
+    input_format,
+    output_format,
+    time_limit,
+    memory_limit,
+    example_input,
+    example_output,
+    explanation,
+    tags = []
+  } = req.body;
+
+  const fileds = 
+    [
+    "title",
+    "difficulty",
+    "statement",
+    "input_format",
+    "output_format",
+    "example_input",
+    "example_output"
+    ];
+
+  const values = 
+    [
+    title,
+    difficulty,
+    statement,
+    input_format,
+    output_format,
+    example_input,
+    example_output
+    ];
+
+  if (
+  !title ||
+  !difficulty ||
+  !statement ||
+  !input_format ||
+  !output_format ||
+  !example_input ||
+  !example_output
+) {
+  return res.status(400).json({message: "All fields are required"});
+  }
+  if (points !== undefined){
+    fileds.push("points");
+    values.push(points);
+  }
+  if (time_limit !== undefined){
+    fileds.push("time_limit");
+    values.push(time_limit);
+  }
+  if (memory_limit !== undefined){
+    fileds.push("memory_limit");
+    values.push(memory_limit);
+  }
+  if (explanation !== undefined){
+    fileds.push("explanation");
+    values.push(explanation);
+  }
+
+  const placeholders = fileds.map(() => "?").join(", ");
+
+  try{
+    const [result] = await db.query(`insert into problems (${fileds.join(", ")}) values (${placeholders})`,
+      values);
+
+    const problem_id = result.insertId;
+
+    for (const tag_id of tags){
+      await db.query ("insert into problemtags (problem_id, tag_id) values (?, ?);", [problem_id, tag_id]);
+    }
+     return (res.status(201).json({message: "Problem created successfully"}));
+  }
+
+  catch (error) {
+    return (res.status(500).json({
+        message: "Database error",
+        error: error.message
+    }));
+  }
+}
+
+module.exports={getAllProblems,getAllProblemsSorted, add_problems};

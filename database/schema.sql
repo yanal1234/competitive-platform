@@ -73,21 +73,14 @@ end_time DATETIME NOT NULL,
 status ENUM('Upcoming','Running','Finished') DEFAULT 'Upcoming'
 );
 
-create table if not exists Recommendations(
-recommendation_id INT PRIMARY KEY AUTO_INCREMENT,
-score DECIMAL(5,2) NOT NULL,
-reason text,
-is_viewed BOOLEAN DEFAULT FALSE,
-created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-user_id INT NOT NULL,
-problem_id INT NOT NULL,
-    FOREIGN KEY (user_id)
-        REFERENCES Users(user_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
+CREATE TABLE IF NOT EXISTS user_recommendations (
+    user_id INT NOT NULL PRIMARY KEY,
+    recommendation TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (problem_id)
-        REFERENCES Problems(problem_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
