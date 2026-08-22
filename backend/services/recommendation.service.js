@@ -39,13 +39,19 @@ const generateRecommendations = async (user_id) => {
     return { ...p, score };
   });
   ranked.sort((a, b) => { return b.score - a.score });
+  const problemId = [...new Set(problems.map(p => p.problem_id))].join(", ");
 
   console.log("Weak Skills:", weakSkills);
   console.log("Related Skills:", relatedSkills);
   console.log("All Tags:", allTags);
   console.log("Problems Found:", problems.length);
+  console.log("problem_id: ", problemId);
 
-  return { weakSkills, recommendations: ranked.slice(0, 6) }
+  return {
+    weakSkills,
+    recommendations: ranked.slice(0, 6),
+    problemsId: problemId
+  }
 }
 
 module.exports = { generateRecommendations };

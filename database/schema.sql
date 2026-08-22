@@ -76,6 +76,7 @@ status ENUM('Upcoming','Running','Finished') DEFAULT 'Upcoming'
 CREATE TABLE IF NOT EXISTS user_recommendations (
     user_id INT NOT NULL PRIMARY KEY,
     recommendation TEXT NOT NULL,
+    tags TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,

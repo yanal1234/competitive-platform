@@ -13,7 +13,7 @@ const getAllSubmissions = async (req, res) => {
 
 const getSubmissionsUser = async (req, res) => {
   try {
-    const user_id = Number(req.params.user_id);
+    const user_id = req.user.user_id;
     const [rows] = await db.query("SELECT * FROM submissions WHERE user_id= ? LIMIT 10;", [user_id])
     if (rows.length === 0) {
       res.status(404).json({ message: "No submissions" });

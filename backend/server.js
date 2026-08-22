@@ -10,6 +10,8 @@ const RouteStatistics = require("./routes/statistics.routes");
 const Routerecommendations = require("./routes/recommendations.routes");
 const RouteRoadmaps = require("./routes/roadmap.routes");
 const Routeauth = require("./routes/auth.routes");
+const RouteContests = require("./routes/contests.routes");
+
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
@@ -25,6 +27,7 @@ app.use("/api/statistics", RouteStatistics);
 app.use("/api/Recommendations", Routerecommendations);
 app.use("/api/Roadmaps", RouteRoadmaps);
 app.use("/api/auth", Routeauth);
+app.use("/api/Contests", RouteContests);
 
 app.listen(process.env.PORT, () => {
   console.log("Server running...");

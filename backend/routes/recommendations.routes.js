@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const { verifyToken } = require("../middleware/auth.middleware");
 
-const { getRecommendations } = require("../controllers/recommendations.controller");
+const { generateAndSaveRecommendations } = require("../controllers/recommendations.controller");
 
-router.get("/:user_id", getRecommendations);
+router.post("/", verifyToken, generateAndSaveRecommendations);
 
 module.exports = router;
