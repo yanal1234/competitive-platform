@@ -175,4 +175,65 @@ const getMyProfile = async (req, res) => {
     });
   };
 };
-module.exports = { Register, login, logout, refreshToken, getMyProfile };
+
+const updateProfile = async (req, res) => {
+  try {
+
+    const user_id = req.user.user_id;
+    const {
+      username,
+      email,
+      bio,
+      profile_picture,
+      country
+    } = req.body;
+
+    const fields = [];
+    const values = [];
+
+    if (username !== undefined) {
+      fields.push("username = ?");
+      values.push(username);
+    }
+
+    if (email !== undefined) {
+      fields.push("email = ?");
+      values.push(email);
+    }
+
+    if (bio !== undefined) {
+      fields.push("bio = ?");
+      values.push(bio);
+    }
+
+    if (profile_picture !== undefined) {
+      fields.push("profile_picture = ?");
+      values.push(profile_picture);
+    }
+
+    if (country !== undefined) {
+      fields.push("country = ?");
+      values.push(country);
+    }
+
+    if (fields.length === 0) {
+      return res.status(400).json({
+        message: "No fields to update."
+      });
+    }
+
+    values.push(user_id);
+    await db.query(`UPDATE users SET ${fields.join(", ")} WHERE user_id = ?;`, values);
+
+    res.status(200).json({
+      message: "Profile updated successfully."
+    });
+  }
+  catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
+};
+
+module.exports = { Register, login, logout, refreshToken, getMyProfile, updateProfile };
