@@ -1,0 +1,30 @@
+import { useState } from 'react'
+import "./App.css"
+
+function App() {
+
+  return (
+    <>
+      <div className='yy'>
+        <div>
+          <h1>
+            Master Competitive
+            Programing with
+            AI Intelligence
+          </h1>
+          <p>
+          </p>
+          CodeForge AI combines competitive programing,
+          personalized learning, and artificial intelligence to
+          help you level up your coding skills efficinetly.
+        </div>
+        <div>
+          <img src="../public/images/Frame 9.svg" />
+        </div>
+      </div>
+    </>
+  )
+}
+
+
+export default App

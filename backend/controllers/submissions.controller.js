@@ -3,28 +3,73 @@ const runCode = require("../../judge/runner.js")
 const { updateUserSkills } = require("../utils/userSkills.utils.js");
 
 const getAllSubmissions = async (req, res) => {
+  const page = Number(req.query.page) || 1;
+  const limit = 10;
+  const offset = (page - 1) * limit;
+
   try {
-    const [rows] = await db.query("SELECT * FROM submissions;");
-    res.status(200).json(rows);
+    const [submissions] = await db.query(`SELECT *
+       FROM submissions
+       ORDER BY submitted_at DESC
+       LIMIT ? OFFSET ?;`, [limit, offset]);
+
+    const [result] = await db.query(
+      `SELECT COUNT(*) AS total
+       FROM submissions;`
+    );
+
+    res.status(200).json({
+      message: "operation is successfully.",
+      submissions: submissions,
+      pagination: {
+        currentPage: page,
+        limit: limit,
+        total: result[0].total,
+        totalPages: Math.ceil(result[0].total / limit)
+      }
+    });
   }
-  catch (err) {
-    res.status(500).json({ message: err.message });
+  catch (error) {
+    res.status(500).json({
+      message: "Internal server error.",
+      error: error.message
+    });
   }
 };
 
 const getSubmissionsUser = async (req, res) => {
+  const user_id = req.user.user_id;
+  const page = Number(req.query.page) || 1;
+  const limit = 10;
+  const offset = (page - 1) * limit;
+
   try {
-    const user_id = req.user.user_id;
-    const [rows] = await db.query("SELECT * FROM submissions WHERE user_id= ? LIMIT 10;", [user_id])
-    if (rows.length === 0) {
-      res.status(404).json({ message: "No submissions" });
-    }
-    else {
-      res.status(200).json(rows[0]);
-    }
+    const [user_submission] = await db.query(`SELECT *
+    FROM submissions
+    WHERE user_id = ?
+    ORDER BY submitted_at DESC
+    LIMIT ? OFFSET ?`, [user_id, limit, offset]);
+
+    const [result] = await db.query(
+      `SELECT COUNT(*) AS total
+       FROM submissions WHERE user_id = ?;`, [user_id]);
+
+    res.status(200).json({
+      message: "operation is successfully.",
+      submissions: user_submission,
+      pagination: {
+        currentPage: page,
+        limit: limit,
+        total: result[0].total,
+        totalPages: Math.ceil(result[0].total / limit)
+      }
+    });
   }
-  catch (err) {
-    res.status(500).json({ message: err.message });
+  catch (error) {
+    res.status(500).json({
+      message: "Internal server error.",
+      error: error.message
+    });
   }
 };
 
@@ -206,10 +251,37 @@ const add_submissions = async (req, res) => {
   }
   catch (error) {
     return (res.status(500).json({
-      message: "Database error",
+      message: "Internal server error.",
       error: error.message
+
     }));
   }
 }
 
-module.exports = { getAllSubmissions, getSubmissionsUser, add_submissions };
+const getSubmissionById = async (req, res) => {
+  const user_id = req.user.user_id;
+  const submissionId = req.params.submissionId;
+
+  try {
+    const [submission] = await db.query(`SELECT * FROM submissions 
+    WHERE submission_id = ? AND user_id = ? LIMIT 1;`, [submissionId, user_id]);
+    if (submission.length === 0) {
+      return res.status(404).json({
+        message: "the submission not found."
+      })
+    }
+
+    res.status(200).json({
+      message: " operation is successfully.",
+      submission: submission[0]
+    });
+  }
+  catch (error) {
+    res.status(500).json({
+      message: "Internal server error.",
+      error: error.message
+    });
+  }
+}
+
+module.exports = { getAllSubmissions, getSubmissionsUser, add_submissions, getSubmissionById };

@@ -16,7 +16,8 @@ const generateRoadmap = (rows) => {
     }
     stage[row.stage_id].topics.push({
       tagId: row.tag_id,
-      name: row.tag_name
+      name: row.tag_name,
+      completed: row.completed || 0
     })
   }
   return roadmap;
