@@ -1,0 +1,13 @@
+/* 1. لإخفاء شريط التمرير في المتصفحات الحديثة (Chrome, Safari, Edge, Opera) */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* 2. لإخفاء شريط التمرير في متصفح Firefox و Internet Explorer/Edge القديم */
+html,
+body {
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+}

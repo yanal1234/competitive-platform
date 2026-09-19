@@ -1,0 +1,238 @@
+/* =========================================
+   CodeForge AI - Terms of Service
+   ========================================= */
+
+.terms-page-container {
+  max-width: 1000px;
+  margin: 0 auto;
+
+  padding: 4rem 1.5rem 6rem;
+
+  color: #f8fafc;
+
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+
+  animation: termsFadeIn 0.5s ease-out forwards;
+}
+
+@keyframes termsFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================
+   Header
+   ========================================= */
+
+.terms-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+
+  margin-bottom: 3rem;
+}
+
+.badge-legal {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 0.35rem 0.9rem;
+  margin-bottom: 1.25rem;
+
+  font-size: 0.725rem;
+  font-weight: 700;
+
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+
+  border-radius: 9999px;
+
+  background-color: rgba(168, 85, 247, 0.12);
+
+  color: #c084fc;
+
+  border: 1px solid rgba(168, 85, 247, 0.3);
+
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.12);
+
+  transition: all 0.3s ease;
+}
+
+.badge-legal:hover {
+  background-color: rgba(168, 85, 247, 0.2);
+
+  box-shadow: 0 0 18px rgba(168, 85, 247, 0.25);
+}
+
+/* =========================================
+   Title
+   ========================================= */
+
+.terms-title {
+  margin: 0 0 1rem;
+
+  font-size: 2.75rem;
+  font-weight: 800;
+
+  line-height: 1.2;
+
+  letter-spacing: -0.025em;
+}
+
+.highlight-purple {
+  color: #a855f7;
+
+  text-shadow: 0 0 20px rgba(168, 85, 247, 0.35);
+}
+
+/* =========================================
+   Subtitle
+   ========================================= */
+
+.terms-subtitle {
+  max-width: 650px;
+
+  margin: 0 auto;
+
+  color: #94a3b8;
+
+  font-size: 1.05rem;
+
+  line-height: 1.7;
+}
+
+/* =========================================
+   Terms Card
+   ========================================= */
+
+.terms-card {
+  max-width: 800px;
+
+  margin: 0 auto;
+
+  padding: 2.5rem;
+
+  background: rgba(15, 23, 42, 0.6);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  border-radius: 1rem;
+
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.3),
+    0 0 25px rgba(168, 85, 247, 0.04);
+
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.terms-card:hover {
+  border-color: rgba(168, 85, 247, 0.2);
+
+  box-shadow:
+    0 15px 45px rgba(0, 0, 0, 0.35),
+    0 0 30px rgba(168, 85, 247, 0.06);
+}
+
+/* =========================================
+   Sections
+   ========================================= */
+
+.terms-section {
+  margin-bottom: 2.25rem;
+}
+
+.terms-section:last-child {
+  margin-bottom: 0;
+}
+
+.terms-section:not(:last-child) {
+  padding-bottom: 2rem;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.terms-section h2 {
+  margin: 0 0 0.75rem;
+
+  font-size: 1.1rem;
+  font-weight: 700;
+
+  line-height: 1.4;
+
+  color: #f8fafc;
+
+  transition: color 0.25s ease;
+}
+
+.terms-section:hover h2 {
+  color: #d8b4fe;
+}
+
+.terms-section p {
+  margin: 0;
+
+  font-size: 0.92rem;
+
+  line-height: 1.75;
+
+  color: #94a3b8;
+}
+
+/* =========================================
+   Responsive
+   ========================================= */
+
+@media (max-width: 700px) {
+  .terms-page-container {
+    padding: 3rem 1.25rem 5rem;
+  }
+
+  .terms-title {
+    font-size: 2.2rem;
+  }
+
+  .terms-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .terms-card {
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .terms-page-container {
+    padding: 2.5rem 1rem 4rem;
+  }
+
+  .terms-title {
+    font-size: 1.9rem;
+  }
+
+  .terms-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .terms-section {
+    margin-bottom: 1.75rem;
+  }
+
+  .terms-section:not(:last-child) {
+    padding-bottom: 1.5rem;
+  }
+}

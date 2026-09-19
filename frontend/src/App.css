@@ -1,37 +1,9 @@
-.yy {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  min-height: 100vh;
-  padding: 0 8%;
-  box-sizing: border-box;
+::-webkit-scrollbar {
+  display: none;
 }
 
-.pp {
-  width: 50%;
-}
-
-.pp h1 {
-  font-size: 55px;
-  line-height: 1.1;
-  margin-bottom: 25px;
-}
-
-.pp p {
-  font-size: 18px;
-  line-height: 1.6;
-  max-width: 550px;
-}
-
-.img {
-  width: 50%;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.img img {
-  width: 100%;
-  max-width: 500px;
-  height: auto;
+html,
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }

@@ -1,0 +1,199 @@
+/* =========================================
+   Call To Action - CodeForge AI Theme
+   ========================================= */
+
+.cta-section {
+  max-width: 1150px;
+  width: 100%;
+  margin: 5rem auto;
+  padding: 0 1.5rem;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* =========================
+   GLOW CONTAINER & BACKGROUND
+========================= */
+
+.cta-glow-wrapper {
+  position: relative;
+  border-radius: 1.25rem;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(168, 85, 247, 0.2) 100%);
+  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.8);
+}
+
+/* خلفية التوهج الأرجواني الخافتة في المنتصف */
+.cta-glow-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  height: 60%;
+  background: rgba(168, 85, 247, 0.15);
+  filter: blur(80px);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cta-container {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(20, 24, 38, 0.75) 0%, rgba(10, 12, 20, 0.9) 100%);
+  border-radius: 1.2rem;
+  padding: 4.5rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+}
+
+/* خط تدرج أعلى الإطار الداخلي */
+.cta-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(192, 132, 252, 0.6), transparent);
+}
+
+/* =========================
+   TEXT & BADGES
+========================= */
+
+.cta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: #c084fc;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+  background-color: rgba(88, 28, 135, 0.25);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.2);
+}
+
+.cta-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 0.85rem 0;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.purple-text {
+  background: linear-gradient(135deg, #c084fc 0%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.cta-description {
+  font-size: 1rem;
+  color: #94a3b8;
+  max-width: 500px;
+  margin: 0 0 2.25rem 0;
+  line-height: 1.6;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.cta-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.6rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* الزر الرئيسي - أصفر مضيء */
+.primary-btn {
+  background-color: #f59e0b;
+  color: #0f172a;
+  border: 1px solid #fbbf24;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+}
+
+.primary-btn:hover {
+  background-color: #d97706;
+  border-color: #f59e0b;
+  box-shadow: 0 0 28px rgba(245, 158, 11, 0.6);
+  transform: translateY(-2px);
+}
+
+.primary-btn svg {
+  transition: transform 0.2s ease;
+}
+
+.primary-btn:hover svg {
+  transform: translateX(3px);
+}
+
+/* الزر الثانوي - زجاجي داكن */
+.secondary-btn {
+  background-color: rgba(255, 255, 255, 0.03);
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+}
+
+.secondary-btn:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* =========================
+   RESPONSIVE DESIGN
+========================= */
+
+@media (max-width: 640px) {
+  .cta-section {
+    margin: 3.5rem auto;
+  }
+
+  .cta-container {
+    padding: 3rem 1.25rem;
+  }
+
+  .cta-title {
+    font-size: 1.85rem;
+  }
+
+  .cta-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .cta-btn {
+    width: 100%;
+  }
+}

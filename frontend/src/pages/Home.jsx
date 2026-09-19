@@ -1,31 +1,36 @@
-
+import "../styles/Home.css";
 import FeatureCards from "../components/Home/FeatureCards/FeatureCards";
+import ProblemsTable from "../components/Home/ProblemsTable/ProblemsTable";
+import HeroSection from "../components/Home/HeroSection/HeroSection";
+import LeaderboardSection from "../components/Home/LeaderboardSection/LeaderboardSection";
+import CallToAction from "../components/Home/CallToAction/CallToAction";
+import Footer from "../components/Home/Footer/Footer";
+import ScrollReveal from "../components/ScrollReveal/ScrollReveal";
 
 function Home() {
   return (
     <div>
-      <div className="yy">
-        <div className="pp">
-          <h1>
-            Master Competitive<br />
-            Programming with<br />
-            AI Intelligence
-          </h1>
+      <HeroSection />
 
-          <p>
-            CodeForge AI combines competitive programming,
-            personalized learning, and artificial intelligence to
-            help you level up your coding skills efficiently.
-          </p>
-        </div>
+      <ScrollReveal animation="up">
+        <FeatureCards />
+      </ScrollReveal>
 
-        <div className="img">
-          <img src="/images/Frame 9.svg" alt="CodeForge AI" />
-        </div>
-      </div>
-      <FeatureCards />
+      <ScrollReveal animation="left">
+        <ProblemsTable />
+      </ScrollReveal>
+
+      <ScrollReveal animation="right">
+        <LeaderboardSection />
+      </ScrollReveal>
+
+      <ScrollReveal animation="scale">
+        <CallToAction />
+      </ScrollReveal>
+
+      <Footer />
     </div>
-  )
+  );
 }
 
 export default Home

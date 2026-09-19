@@ -4,7 +4,7 @@ const db = require("../config/db");
 const { generateAccessToken, generateRefreshToken } = require("../utils/jwt")
 const { sendRefreshToken } = require("../utils/sendTokens");
 const { formatProblems } = require("../utils/formatProblems")
-const { NodeUploader } = require("@google/genai/vertex_internal");
+const { OAuth2Client } = require("google-auth-library");
 
 const Register = async (req, res) => {
   const { username, email, password, country } = req.body;
@@ -236,4 +236,45 @@ const updateProfile = async (req, res) => {
   }
 };
 
-module.exports = { Register, login, logout, refreshToken, getMyProfile, updateProfile };
+const initiateGoogleAuth = async (req, res) => {
+  const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    "http://localhost:5000/api/auth/google/callback");
+
+  const authUrl = client.generateAuthUrl({
+    access_type: "offline",
+    scope: ["openid", "email", "profile"],
+  })
+
+  res.redirect(authUrl);
+};
+
+const googleCallback = async (req, res) => {
+  try {
+    const code = req.query.code;
+
+    const client = new OAuth2Client(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      "http://localhost:5000/api/auth/google/callback"
+    );
+
+    const { tokens } = await client.getToken(code);
+    client.setCredentials(tokens);
+
+    console.log("Tokens received:", tokens);
+
+    res.json({
+      message: "Google authentication successful",
+    });
+  }
+  catch (error) {
+    console.error("Google authentication error:", error);
+
+    res.status(500).json({
+      message: "Google authentication failed",
+    });
+  }
+};
+
+module.exports = { Register, login, logout, refreshToken, getMyProfile, updateProfile, initiateGoogleAuth, googleCallback };
