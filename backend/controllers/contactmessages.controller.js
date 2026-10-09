@@ -7,7 +7,8 @@ const getMessages = async (req, res) => {
   const offset = (page - 1) * limit;
 
   try {
-    const [messages] = await db.query(`SELECT c.message_id, c.subject, c.message, c.created_at,
+    const [messages] = await db.query(
+      `SELECT c.message_id, c.subject, c.message, c.created_at,
     u.username, u.email, u.rating,
     CASE
         WHEN u.rating < 800 THEN 'Novice'
@@ -22,9 +23,12 @@ const getMessages = async (req, res) => {
     END AS user_rank,
     u.bio, u.profile_picture, u.country, u.name
     FROM contact_messages c JOIN users u ON u.user_id = c.user_id WHERE u.user_id = ? LIMIT ? OFFSET ?;`,
-      [user_id, limit, offset]);
+      [user_id, limit, offset],
+    );
 
-    const [result] = await db.query(`SELECT COUNT(*) AS total FROM contact_messages;`);
+    const [result] = await db.query(
+      `SELECT COUNT(*) AS total FROM contact_messages;`,
+    );
 
     res.status(200).json({
       message: "operation is successfully.",
@@ -33,42 +37,42 @@ const getMessages = async (req, res) => {
         currentPage: page,
         limit: limit,
         total: result[0].total,
-        totalPages: Math.ceil(result[0].total / limit)
-      }
+        totalPages: Math.ceil(result[0].total / limit),
+      },
     });
-  }
-  catch (error) {
+  } catch (error) {
     res.status(500).json({
       message: "Internal server error.",
-      error: error.message
+      error: error.message,
     });
   }
-}
+};
 
 const addMessage = async (req, res) => {
   const user_id = req.user.user_id;
   try {
-    const [result] = await db.query(`INSERT INTO contact_messages (user_id, subject, message)
+    const [result] = await db.query(
+      `INSERT INTO contact_messages (user_id, subject, message)
     VALUES ( ?, 'Problem with submission',
-    'I submitted my solution but I received an unexpected verdict.');` , [user_id]);
+    'I submitted my solution but I received an unexpected verdict.');`,
+      [user_id],
+    );
 
     if (result.affectedRows === 0) {
       return res.status(500).json({
-        message: "Failed to send message"
+        message: "Failed to send message",
       });
     }
 
     res.status(201).json({
-      message: "Message sent successfully"
+      message: "Message sent successfully",
     });
-  }
-  catch (error) {
+  } catch (error) {
     res.status(500).json({
       message: "Internal server error.",
-      error: error.message
+      error: error.message,
     });
   }
-}
+};
 
 module.exports = { getMessages, addMessage };
-

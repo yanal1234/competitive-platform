@@ -5,28 +5,36 @@ const getDashboard = async (req, res) => {
   try {
     const [user] = await db.query(
       `SELECT user_id FROM users WHERE user_id = ?`,
-      [user_id]
+      [user_id],
     );
 
     if (user.length === 0) {
       return res.status(404).json({
-        message: "User not found"
+        message: "User not found",
       });
     }
 
-    const [Problems_id] = await db.query(`SELECT problemsId
-    FROM user_recommendations WHERE user_id = ?;`, [user_id]);
+    const [Problems_id] = await db.query(
+      `SELECT problemsId
+    FROM user_recommendations WHERE user_id = ?;`,
+      [user_id],
+    );
 
-    const problems = Problems_id[0]?.problemsId ? Problems_id[0].problemsId.split(",").map(Number)
+    const problems = Problems_id[0]?.problemsId
+      ? Problems_id[0].problemsId.split(",").map(Number)
       : [];
-    const priorityProblems = [... new Set(problems)].length;
+    const priorityProblems = [...new Set(problems)].length;
 
-    const [skills] = await db.query(`SELECT COUNT(*) AS number_skills FROM userskills
-    WHERE user_id = ?;`, [user_id]);
+    const [skills] = await db.query(
+      `SELECT COUNT(*) AS number_skills FROM userskills
+    WHERE user_id = ?;`,
+      [user_id],
+    );
 
     const skillsMeasured = Number(skills[0].number_skills);
 
-    const [roadmap] = await db.query(`
+    const [roadmap] = await db.query(
+      `
     SELECT COUNT(*) AS remainingStages
     FROM (
         SELECT rt.stage_id
@@ -39,11 +47,14 @@ const getDashboard = async (req, res) => {
         HAVING SUM(
             CASE WHEN urp.completed = 1 THEN 1 ELSE 0 END
         ) < COUNT(*)
-    ) AS incomplete_stages`, [user_id]);
+    ) AS incomplete_stages`,
+      [user_id],
+    );
 
     const remainingStages = Number(roadmap[0].remainingStages);
 
-    const [users_active] = await db.query(`SELECT COUNT(*) AS activeCoders FROM users
+    const [users_active] =
+      await db.query(`SELECT COUNT(*) AS activeCoders FROM users
     WHERE last_login >= NOW() - INTERVAL 30 DAY`);
 
     const activeCoders = Number(users_active[0].activeCoders);
@@ -52,15 +63,14 @@ const getDashboard = async (req, res) => {
       priorityProblems,
       skillsMeasured,
       remainingStages,
-      activeCoders
-    })
-  }
-  catch (error) {
+      activeCoders,
+    });
+  } catch (error) {
     res.status(500).json({
       message: "Internal server error.",
-      error: error.message
+      error: error.message,
     });
   }
-}
+};
 
 module.exports = { getDashboard };
