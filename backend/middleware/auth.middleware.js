@@ -3,31 +3,28 @@ require("dotenv/config");
 
 const verifyToken = (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
+    const accesstoken = req.cookies?.accesstoken;
+    if (!accesstoken) {
       return res.status(401).json({ message: "Access token is required" });
     }
-    const token = authHeader.split(" ")[1];
-    const decode = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const decode = jwt.verify(accesstoken, process.env.ACCESS_TOKEN_SECRET);
     req.user = decode;
     next();
-  }
-  catch (error) {
+  } catch (error) {
     return res.status(401).json({
       message: "Invalid or expired token",
-      error: error.message
+      error: error.message,
     });
   }
-
 };
 
 const verifyAdmin = (req, res, next) => {
   if (req.user.role !== "admin") {
     return res.status(403).json({
-      message: "You do not have the authority to perform this operation."
-    })
+      message: "You do not have the authority to perform this operation.",
+    });
   }
   next();
-}
+};
 
 module.exports = { verifyToken, verifyAdmin };

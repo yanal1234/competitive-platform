@@ -1,16 +1,57 @@
 import React, { useState, useRef, useEffect } from "react";
 import { NavLink, Link, Outlet, useLocation } from "react-router-dom";
 import { motion } from "motion/react";
+import { getProfile, logoutProfile } from "../../services/profile";
 import logoSvg from "../../assets/logo.svg";
-import { Home, Code2, Trophy, LineChart, LogOut, Sparkles, User, Search, X, UserPlus } from "lucide-react";
+import {
+  Home,
+  Code2,
+  Trophy,
+  LineChart,
+  LogOut,
+  Sparkles,
+  User,
+  Search,
+  X,
+  UserPlus,
+} from "lucide-react";
 import "./Header.css";
 
-// بيانات وهمية للـ Users للتجربة
 const MOCK_USERS = [
-  { id: 1, name: "Ayham Shalabi", username: "mr.rabbit", rank: "Master", rating: 2150, avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80" },
-  { id: 2, name: "Samer Hassan", username: "code_ninja", rank: "Candidate Master", rating: 1920, avatar: "" },
-  { id: 3, name: "Lina Ahmad", username: "algo_queen", rank: "Grandmaster", rating: 2410, avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" },
-  { id: 4, name: "Omar Khaled", username: "shadow_coder", rank: "Specialist", rating: 1540, avatar: "" }
+  {
+    id: 1,
+    name: "Ayham Shalabi",
+    username: "mr.rabbit",
+    rank: "Master",
+    rating: 2150,
+    avatar:
+      "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80",
+  },
+  {
+    id: 2,
+    name: "Samer Hassan",
+    username: "code_ninja",
+    rank: "Candidate Master",
+    rating: 1920,
+    avatar: "",
+  },
+  {
+    id: 3,
+    name: "Lina Ahmad",
+    username: "algo_queen",
+    rank: "Grandmaster",
+    rating: 2410,
+    avatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80",
+  },
+  {
+    id: 4,
+    name: "Omar Khaled",
+    username: "shadow_coder",
+    rank: "Specialist",
+    rating: 1540,
+    avatar: "",
+  },
 ];
 
 const navLinks = [
@@ -22,19 +63,20 @@ const navLinks = [
 
 function Header() {
   const location = useLocation();
-  const [user, setUser] = useState({
-    name: "Ayham Shalabi",
-    username: "mr.rabbit",
-    avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80"
-  });
-
-  // حالات البحث
+  const [user, setUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const searchRef = useRef(null);
 
-  // التعامل مع مدخلات البحث
+  const handleLogout = async () => {
+    try {
+      await logoutProfile();
+      setUser(null);
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
   const handleSearchChange = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
@@ -44,7 +86,7 @@ function Header() {
       const filtered = MOCK_USERS.filter(
         (u) =>
           u.name.toLowerCase().includes(query.toLowerCase()) ||
-          u.username.toLowerCase().includes(query.toLowerCase())
+          u.username.toLowerCase().includes(query.toLowerCase()),
       );
       setSearchResults(filtered);
     } else {
@@ -53,14 +95,19 @@ function Header() {
     }
   };
 
-  // إغلاق قائمة البحث عند النقر خارجها
   useEffect(() => {
+    const user_Profile = async () => {
+      const response = await getProfile();
+      setUser(response.data);
+      console.log(response.data);
+    };
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setIsSearching(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
+    user_Profile();
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
@@ -68,7 +115,6 @@ function Header() {
     <div>
       <header className="navbar-header">
         <div className="navbar-container">
-
           {/* Brand Logo & Navigation */}
           <div className="navbar-left">
             <Link to="/" className="navbar-logo-link">
@@ -79,19 +125,26 @@ function Header() {
               {navLinks.map((item, index) => {
                 const isActive = location.pathname === item.path;
                 return (
-                  <NavLink key={index} to={item.path} className={({ isActive }) => (isActive ? "nav-item active" : "nav-item")}>
+                  <NavLink
+                    key={index}
+                    to={item.path}
+                    className={({ isActive }) =>
+                      isActive ? "nav-item active" : "nav-item"
+                    }
+                  >
                     <item.icon size={16} className="nav-icon" />
                     <span className="nav-label">{item.label}</span>
-                    {isActive && (<motion.div
-                      layoutId="activeNavIndicator"
-                      className="active-tab-glow"
-                      transition={{
-                        type: "spring",
-                        stiffness: 550,
-                        damping: 90
-                      }}
-                    />)
-                    }
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeNavIndicator"
+                        className="active-tab-glow"
+                        transition={{
+                          type: "spring",
+                          stiffness: 550,
+                          damping: 90,
+                        }}
+                      />
+                    )}
                   </NavLink>
                 );
               })}
@@ -137,19 +190,32 @@ function Header() {
                       >
                         <div className="result-avatar">
                           {resultUser.avatar ? (
-                            <img src={resultUser.avatar} alt={resultUser.name} />
+                            <img
+                              src={resultUser.avatar}
+                              alt={resultUser.name}
+                            />
                           ) : (
                             <User size={16} />
                           )}
                         </div>
                         <div className="result-info">
                           <div className="result-name-row">
-                            <span className="result-name">{resultUser.name}</span>
-                            <span className="result-rank-badge">{resultUser.rank}</span>
+                            <span className="result-name">
+                              {resultUser.name}
+                            </span>
+                            <span className="result-rank-badge">
+                              {resultUser.rank}
+                            </span>
                           </div>
-                          <span className="result-username">@{resultUser.username} • Rating: {resultUser.rating}</span>
+                          <span className="result-username">
+                            @{resultUser.username} • Rating: {resultUser.rating}
+                          </span>
                         </div>
-                        <button className="quick-follow-btn" title="Follow" onClick={(e) => e.preventDefault()}>
+                        <button
+                          className="quick-follow-btn"
+                          title="Follow"
+                          onClick={(e) => e.preventDefault()}
+                        >
                           <UserPlus size={14} />
                         </button>
                       </Link>
@@ -170,13 +236,17 @@ function Header() {
               <div className="user-profile-badge">
                 <Link to="/my-profile" className="profile-info-link">
                   <div className="user-text-details">
-                    <span className="user-display-name">{user.name}</span>
-                    <span className="user-handle">{user.username}</span>
+                    <span className="user-display-name">{user.user.name}</span>
+                    <span className="user-handle">{user.user.username}</span>
                   </div>
 
                   <div className="avatar-ring">
-                    {user.avatar ? (
-                      <img src={user.avatar} alt={user.name} className="user-avatar-img" />
+                    {user.user.profile_picture ? (
+                      <img
+                        src={user.user.profile_picture}
+                        alt={user.user.name}
+                        className="user-avatar-img"
+                      />
                     ) : (
                       <div className="user-avatar-fallback">
                         <User size={16} />
@@ -190,7 +260,7 @@ function Header() {
                 <button
                   className="logout-action-btn"
                   title="Log out"
-                  onClick={() => setUser(null)}
+                  onClick={handleLogout}
                 >
                   <LogOut size={15} />
                 </button>
@@ -207,11 +277,10 @@ function Header() {
               </div>
             )}
           </div>
-
         </div>
-      </header >
+      </header>
       <Outlet />
-    </div >
+    </div>
   );
 }
 

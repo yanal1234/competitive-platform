@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const db = require("../config/db");
 const { generateAccessToken, generateRefreshToken } = require("../utils/jwt");
-const { sendRefreshToken } = require("../utils/sendTokens");
+const { sendRefreshToken, sendAccessToken } = require("../utils/sendTokens");
 const { formatProblems } = require("../utils/formatProblems");
 const {
   generateUniqueUsername,
@@ -76,6 +76,7 @@ const login = async (req, res) => {
       const accessToken = generateAccessToken(users[0]);
       const refreshToken = generateRefreshToken(users[0]);
       sendRefreshToken(res, refreshToken);
+      sendAccessToken(res, accessToken);
 
       res.status(200).json({
         message: "Login successful",
@@ -105,7 +106,15 @@ const login = async (req, res) => {
 const logout = (req, res) => {
   res.clearCookie("refreshtoken", {
     httpOnly: true,
-    path: "/refresh",
+    secure: false,
+    sameSite: "lax",
+    path: "/api/auth/refresh",
+  });
+  res.clearCookie("accesstoken", {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+    path: "/",
   });
   res.status(200).json({ message: "Logged out successfully" });
 };
@@ -129,8 +138,9 @@ const refreshToken = async (req, res) => {
       });
     }
     const accessToken = generateAccessToken(users[0]);
+    sendAccessToken(res, accessToken);
     res.json({
-      accessToken,
+      message: "successfully",
     });
   } catch (err) {
     res.status(401).json({
@@ -144,7 +154,7 @@ const getMyProfile = async (req, res) => {
     const userId = req.user.user_id;
     const [user] = await db.query(
       `SELECT user_id, username, email, rating, user_rank, bio, 
-      profile_picture, last_login, country FROM users WHERE user_id = ?`,
+      profile_picture, last_login, country, name FROM users WHERE user_id = ?`,
       [userId],
     );
 
@@ -334,9 +344,9 @@ const googleCallback = async (req, res) => {
 
       await db.query(
         `INSERT INTO users
-   (username, email, password, country, profile_picture, role)
-   VALUES (?, ?, ?, ?, ?, ?)`,
-        [username, email, null, country, picture || null, "user"],
+   (username, email, password, country, profile_picture, role, name)
+   VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [username, email, null, country, picture || null, "user", name],
       );
       const [newUsers] = await db.query("SELECT * FROM users WHERE email = ?", [
         email,
@@ -348,6 +358,7 @@ const googleCallback = async (req, res) => {
     const refreshToken = generateRefreshToken(user);
 
     sendRefreshToken(res, refreshToken);
+    sendAccessToken(res, accessToken);
 
     return res.redirect("http://localhost:5173/");
   } catch (error) {
