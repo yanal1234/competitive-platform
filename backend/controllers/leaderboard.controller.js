@@ -6,7 +6,8 @@ const getLeaderboard = async (req, res) => {
   const offset = (page - 1) * limit;
 
   try {
-    const [leaderboard] = await db.query(`SELECT u.username, u.name, u.rating, u.country, u.profile_picture,
+    const [leaderboard] = await db.query(
+      `SELECT u.username, u.name, u.rating, u.country, u.profile_picture,
     CASE
         WHEN u.rating < 800 THEN 'Novice'
         WHEN u.rating < 1200 THEN 'Solver'
@@ -22,11 +23,13 @@ const getLeaderboard = async (req, res) => {
     FROM users u LEFT JOIN submissions s ON u.user_id = s.user_id
     GROUP BY u.user_id, u.username, u.name, u.rating, u.country, u.profile_picture
     ORDER BY u.rating DESC
-    LIMIT ? offset ?;`, [limit, offset]);
+    LIMIT ? offset ?;`,
+      [limit, offset],
+    );
 
     const [result] = await db.query(
       `SELECT COUNT(*) AS total
-       FROM users;`
+       FROM users;`,
     );
 
     res.status(200).json({
@@ -36,13 +39,12 @@ const getLeaderboard = async (req, res) => {
         currentPage: page,
         limit: limit,
         total: result[0].total,
-        totalPages: Math.ceil(result[0].total / limit)
-      }
+        totalPages: Math.ceil(result[0].total / limit),
+      },
     });
-  }
-  catch (error) {
+  } catch (error) {
     res.status(500).json({
-      message: error.message
+      message: error.message,
     });
   }
 };

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { NavLink, Link, Outlet, useLocation } from "react-router-dom";
 import { motion } from "motion/react";
 import { getProfile, logoutProfile } from "../../services/profile";
+import { searchUsers } from "../../services/searchusers";
 import logoSvg from "../../assets/logo.svg";
 import {
   Home,
@@ -16,43 +17,6 @@ import {
   UserPlus,
 } from "lucide-react";
 import "./Header.css";
-
-const MOCK_USERS = [
-  {
-    id: 1,
-    name: "Ayham Shalabi",
-    username: "mr.rabbit",
-    rank: "Master",
-    rating: 2150,
-    avatar:
-      "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80",
-  },
-  {
-    id: 2,
-    name: "Samer Hassan",
-    username: "code_ninja",
-    rank: "Candidate Master",
-    rating: 1920,
-    avatar: "",
-  },
-  {
-    id: 3,
-    name: "Lina Ahmad",
-    username: "algo_queen",
-    rank: "Grandmaster",
-    rating: 2410,
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80",
-  },
-  {
-    id: 4,
-    name: "Omar Khaled",
-    username: "shadow_coder",
-    rank: "Specialist",
-    rating: 1540,
-    avatar: "",
-  },
-];
 
 const navLinks = [
   { path: "/", label: "Home", icon: Home },
@@ -77,18 +41,14 @@ function Header() {
       console.error("Logout failed:", error);
     }
   };
-  const handleSearchChange = (e) => {
+  const handleSearchChange = async (e) => {
     const query = e.target.value;
     setSearchQuery(query);
 
     if (query.trim().length > 0) {
       setIsSearching(true);
-      const filtered = MOCK_USERS.filter(
-        (u) =>
-          u.name.toLowerCase().includes(query.toLowerCase()) ||
-          u.username.toLowerCase().includes(query.toLowerCase()),
-      );
-      setSearchResults(filtered);
+      const filtered = await searchUsers(query);
+      setSearchResults(filtered.data.users);
     } else {
       setIsSearching(false);
       setSearchResults([]);
