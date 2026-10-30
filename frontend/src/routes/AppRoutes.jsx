@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Home from "../pages/Home";
 import Problems from "../pages/Problems";
 import Contests from "../pages/Contests";
@@ -16,6 +16,9 @@ import Header from "../components/Header/Header";
 import ScrollToTop from "../components/ScrollToTop/ScrollToTop";
 
 function AppRoutes() {
+  const location = useLocation();
+
+  console.log("Current pathname:", location.pathname);
   return (
     <>
       <ScrollToTop />
@@ -37,7 +40,7 @@ function AppRoutes() {
         <Route path="/signup" element={<Signup />} />
       </Routes>
     </>
-  )
+  );
 }
 
-export default AppRoutes
+export default AppRoutes;
